@@ -2,7 +2,10 @@
 #include <MainGameState.hpp>
 #include <memory>
 #include <chrono>
-#include <vendor/include/raylib.h>
+extern "C" {
+ #include <raylib.h>
+}
+
 
 int main()
 { 

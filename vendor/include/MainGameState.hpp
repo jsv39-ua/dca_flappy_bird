@@ -1,12 +1,24 @@
 #pragma once
+#include <deque>
 #include <GameState.hpp>
-
+extern "C" {
+ #include <raylib.h>
+}
 
 struct Bird{
     float x;
     float y;
     float vy;
 };
+
+struct PipePair {
+    Rectangle top, bot;
+    bool scored=false;
+};
+
+
+
+
 
 class MainGameState : public GameState
 {
@@ -26,4 +38,15 @@ class MainGameState : public GameState
     private:
         char entered_key;
         Bird player;
+        std::deque<PipePair> tuberias;
+
+        // Dimensiones de las tuberías
+        const int anchoTubo = 50;
+        const int altoTubo = 50;
+        const int PIPE_SPEED = 20;
+
+        float spawnTimer;
+        int spawnEvery;
+        float PIPE_W = 32;
+        float PIPE_H = 320;
 };

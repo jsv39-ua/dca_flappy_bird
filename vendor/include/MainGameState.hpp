@@ -43,10 +43,10 @@ class MainGameState : public GameState
         // Dimensiones de las tuberías
         const int anchoTubo = 50;
         const int altoTubo = 50;
-        const int PIPE_SPEED = 20;
+        const int PIPE_SPEED = 50;
 
         float spawnTimer;
-        int spawnEvery;
+        float spawnEvery;
         float PIPE_W = 32;
         float PIPE_H = 320;
 };

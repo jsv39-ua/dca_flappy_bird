@@ -14,26 +14,36 @@ MainGameState::MainGameState()
 
 void MainGameState::init()
 {
-    player.x = 200;
+    player.x = 150;
     player.y = 200;
     spawnTimer = 0;
-    
+    spawnEvery = 250;
+
+    SetTargetFPS(60);
     
 }
 
 void MainGameState::handleInput()
-{
+{   
+    // Salto
     if(IsKeyPressed(KEY_SPACE)){
         player.vy = -300;
     }
 }
 
 void MainGameState::update(float deltaTime)
-{
-    player.vy += 500 * deltaTime;
+{   
+    // Gravedad y velocidad vertical del jugador
+    player.vy += 550 * deltaTime;
     player.y += player.vy * deltaTime;
 
-    if(spawnTimer > spawnEvery * deltaTime){
+    // Velocidad a la que aumenta el timer
+    spawnTimer += 1 * deltaTime;
+
+    DrawText(TextFormat("Next pipe in: %f", spawnEvery * deltaTime), 50, 70, 20, YELLOW);
+
+
+    if(spawnTimer >= spawnEvery * deltaTime){
         float pipe_y_offset_top = GetRandomValue(PIPE_H ,GetScreenWidth()/2);
         float x_top = GetScreenWidth();
         Rectangle tuboArriba = {x_top, -pipe_y_offset_top, PIPE_W, PIPE_H};
@@ -43,7 +53,10 @@ void MainGameState::update(float deltaTime)
 
         tuberias.push_back(parTubo);
         
+        spawnTimer = 0;
     };
+
+    
 
     // Se pasa por referencia para poder actualizar los tubos reales y no copias suyas
     for (PipePair& parTuberia : tuberias){
@@ -65,8 +78,17 @@ void MainGameState::render()
     DrawText("Bienvenido a Flappy Bird DCA", 50, 50, 15, YELLOW);
     DrawCircle(player.x, player.y, 17, RED);
 
+
+    DrawText(TextFormat("Next pipe in: %f", spawnTimer), 50, 100, 20, RED);
+
+    DrawFPS(GetScreenWidth() - 20, GetScreenHeight() - 20);
+
     for(PipePair tuberia : tuberias){
-        
+        Rectangle topPipe = tuberia.top;
+        Rectangle botPipe = tuberia.bot;
+
+        DrawRectangle(topPipe.x, topPipe.y, topPipe.width, topPipe.height, GREEN);
+        DrawRectangle(botPipe.x, botPipe.y, botPipe.width, botPipe.height, GREEN);
     }
     EndDrawing();
 }

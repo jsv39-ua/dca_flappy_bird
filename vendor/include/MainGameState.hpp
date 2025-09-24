@@ -49,4 +49,5 @@ class MainGameState : public GameState
         float spawnEvery;
         float PIPE_W = 32;
         float PIPE_H = 320;
+        float PLAYER_RADIUS = 17;
 };

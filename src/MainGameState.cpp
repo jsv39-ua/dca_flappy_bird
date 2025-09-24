@@ -37,12 +37,17 @@ void MainGameState::update(float deltaTime)
     player.vy += 550 * deltaTime;
     player.y += player.vy * deltaTime;
 
+    // Caja de colision para el jugador
+
+    Rectangle playerCol = {player.x - PLAYER_RADIUS, player.y - PLAYER_RADIUS, PLAYER_RADIUS, PLAYER_RADIUS};
+
+    
     // Velocidad a la que aumenta el timer
     spawnTimer += 1 * deltaTime;
 
     DrawText(TextFormat("Next pipe in: %f", spawnEvery * deltaTime), 50, 70, 20, YELLOW);
 
-
+    // Spawnear tubos cada spawnEvery
     if(spawnTimer >= spawnEvery * deltaTime){
         float pipe_y_offset_top = GetRandomValue(PIPE_H ,GetScreenWidth()/2);
         float x_top = GetScreenWidth();
@@ -67,7 +72,16 @@ void MainGameState::update(float deltaTime)
     if(tuberias.front().top.x < 0){
         tuberias.pop_front();
         };
+
+
+        /*************************************/
+        // Calcular colisiones jugador/tuberia
+        //CheckCollisionRecs(parTuberia.top, );
     };
+
+    
+
+    
 }
 
 void MainGameState::render()
@@ -76,8 +90,9 @@ void MainGameState::render()
     BeginDrawing();
     ClearBackground(BLACK);
     DrawText("Bienvenido a Flappy Bird DCA", 50, 50, 15, YELLOW);
-    DrawCircle(player.x, player.y, 17, RED);
+    DrawCircle(player.x, player.y, PLAYER_RADIUS, RED);
 
+    DrawRectanglePro({player.x - PLAYER_RADIUS, player.y - PLAYER_RADIUS, PLAYER_RADIUS, PLAYER_RADIUS}, {player.x, player.y}, 0, BLUE);
 
     DrawText(TextFormat("Next pipe in: %f", spawnTimer), 50, 100, 20, RED);
 

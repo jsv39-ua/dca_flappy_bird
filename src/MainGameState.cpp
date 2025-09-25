@@ -39,7 +39,7 @@ void MainGameState::update(float deltaTime)
 
     // Caja de colision para el jugador
 
-    Rectangle playerCol = {player.x - PLAYER_RADIUS, player.y - PLAYER_RADIUS, PLAYER_RADIUS, PLAYER_RADIUS};
+    Rectangle playerCol = {player.x - PLAYER_RADIUS / 2 , player.y - PLAYER_RADIUS / 2 , PLAYER_RADIUS , PLAYER_RADIUS};
 
     
     // Velocidad a la que aumenta el timer
@@ -76,7 +76,11 @@ void MainGameState::update(float deltaTime)
 
         /*************************************/
         // Calcular colisiones jugador/tuberia
-        //CheckCollisionRecs(parTuberia.top, );
+        
+        if (CheckCollisionRecs(parTuberia.top, playerCol) || CheckCollisionRecs(parTuberia.bot, playerCol)){
+            // Enviar a pantalla de gameover
+            std::cout << "Colision!!" << std::endl;
+        }
     };
 
     
@@ -89,10 +93,11 @@ void MainGameState::render()
 
     BeginDrawing();
     ClearBackground(BLACK);
+    
     DrawText("Bienvenido a Flappy Bird DCA", 50, 50, 15, YELLOW);
     DrawCircle(player.x, player.y, PLAYER_RADIUS, RED);
+    DrawRectanglePro({player.x - PLAYER_RADIUS / 2 , player.y - PLAYER_RADIUS / 2 , PLAYER_RADIUS , PLAYER_RADIUS}, {0, 0}, 0, BLUE);
 
-    DrawRectanglePro({player.x - PLAYER_RADIUS, player.y - PLAYER_RADIUS, PLAYER_RADIUS, PLAYER_RADIUS}, {player.x, player.y}, 0, BLUE);
 
     DrawText(TextFormat("Next pipe in: %f", spawnTimer), 50, 100, 20, RED);
 

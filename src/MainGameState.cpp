@@ -14,6 +14,15 @@ MainGameState::MainGameState()
     
 }
 
+// Cosas que hacer al destruir el estado, como descargar sonidos
+MainGameState::~MainGameState(){
+
+    UnloadSound(dieSound);
+    UnloadSound(hitSound);
+    UnloadSound(flapSound);
+    UnloadSound(pointSound);
+}
+
 void MainGameState::init()
 {
     player.x = 150;
@@ -22,6 +31,17 @@ void MainGameState::init()
     player.puntos = 0;
     spawnTimer = 0;
     spawnEvery = 200;
+
+    isDying = false;
+
+
+    // Cargar sonidos a utilizar
+    flapSound = LoadSound("sounds/wing.wav");
+    dieSound = LoadSound("sounds/die.wav");
+    hitSound = LoadSound("sounds/hit.wav");
+    pointSound = LoadSound("sounds/point.wav");
+
+    SetMasterVolume(1.0f);
 
     
 
@@ -42,10 +62,16 @@ void MainGameState::init()
 }
 
 void MainGameState::handleInput()
-{   
+{      
+
+    if(isDying){
+        return;
+    }
+
     // Salto
     if(IsKeyPressed(KEY_SPACE)){
         player.vy = -200;
+        PlaySound(flapSound);
     }
 }
 
@@ -57,7 +83,7 @@ void MainGameState::update(float deltaTime)
 
     // Caja de colision para el jugador
 
-    Rectangle playerCol = {player.x, player.y + 5.0, player.width , player.height - 10.0};
+    Rectangle playerCol = {player.x, player.y + (float)5.0, (float)player.width , (float)player.height - (float)10.0};
 
     
     // Velocidad a la que aumenta el timer
@@ -100,18 +126,40 @@ void MainGameState::update(float deltaTime)
             
         if (CheckCollisionRecs(parTuberia.top, playerCol) || CheckCollisionRecs(parTuberia.bot, playerCol) || (player.y < 0 || player.y > GetScreenHeight())){
             // Enviar a pantalla de gameover
-            std::cout << "Colision!!" << std::endl;
-            this->state_machine->add_state(std::make_unique<GameOverState>(player.puntos), true);
+            std::cout << "Colssision!!" << std::endl;
+            PlaySound(hitSound);
+            
+            //std::cout<< "Isdying " << isDying <<std::endl;
+            if (!isDying){
+                isDying = true;
+                deathTimer = 0.0f;
+                player.vy = -300; // AL morir da un salto pa arriba
+                PlaySound(dieSound);
+            }
+
+            
+
+            // Aqui podria meter una animacion de muerte
+
+            //this->state_machine->add_state(std::make_unique<GameOverState>(player.puntos), true);
         } 
         
         // Añadir puntos al jugador al pasar un tubo
         if (!parTuberia.scored && (parTuberia.top.x + PIPE_W) < player.x) {
             player.puntos++;
+            PlaySound(pointSound);
             parTuberia.scored = true;
         }
     };
 
     
+    if (isDying) {
+    deathTimer += deltaTime;
+    if (deathTimer >= deathDelay) {
+        this->state_machine->add_state(std::make_unique<GameOverState>(player.puntos), true);
+    }
+    return; // <- mientras está muriendo, no seguimos moviendo tubos ni sumando puntos
+}
 
     
 }
@@ -124,7 +172,7 @@ void MainGameState::render()
     
     DrawText("Bienvenido a Flappy Bird DCA", 50, 50, 15, YELLOW);
     DrawTexture(birdSprite, player.x, player.y, WHITE);
-    Rectangle playerCol = {player.x, player.y + 2.5, player.width , player.height -10};
+    //Rectangle playerCol = {player.x, player.y + 2.5, player.width , player.height -10};
     //DrawRectangleRec(playerCol, BLUE);
 
 

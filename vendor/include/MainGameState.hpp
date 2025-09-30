@@ -27,7 +27,7 @@ class MainGameState : public GameState
 {
     public:
         MainGameState();
-        ~MainGameState() = default;
+        ~MainGameState();
 
         void init() override;
         void handleInput() override;
@@ -56,4 +56,14 @@ class MainGameState : public GameState
         float PIPE_H = 320;
         float PIPE_GAP;
         float PLAYER_RADIUS = 17;
+
+        // Animacion de morir
+        bool isDying = false;
+        float deathTimer = 0.0f;
+        float deathDelay = 1.5f;
+
+        Sound flapSound;
+        Sound dieSound;
+        Sound hitSound;
+        Sound pointSound;
 };

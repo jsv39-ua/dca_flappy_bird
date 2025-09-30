@@ -109,14 +109,14 @@ void MainGameState::update(float deltaTime)
     };
 
     
-
+    // Dejar de renderizar tuberias pasadas
     // Se pasa por referencia para poder actualizar los tubos reales y no copias suyas
     for (PipePair& parTuberia : tuberias){
     
         parTuberia.top.x -= PIPE_SPEED * deltaTime;
         parTuberia.bot.x -= PIPE_SPEED * deltaTime;
 
-        if(tuberias.front().top.x < 0){
+        if(tuberias.front().top.x < -PIPE_W){
             tuberias.pop_front();
         };
 
@@ -127,7 +127,11 @@ void MainGameState::update(float deltaTime)
         if (CheckCollisionRecs(parTuberia.top, playerCol) || CheckCollisionRecs(parTuberia.bot, playerCol) || (player.y < 0 || player.y > GetScreenHeight())){
             // Enviar a pantalla de gameover
             std::cout << "Colssision!!" << std::endl;
-            PlaySound(hitSound);
+            if (!hitSoundPlayed){
+                PlaySound(hitSound);
+                hitSoundPlayed = true;
+            }
+            
             
             //std::cout<< "Isdying " << isDying <<std::endl;
             if (!isDying){
@@ -145,7 +149,7 @@ void MainGameState::update(float deltaTime)
         } 
         
         // Añadir puntos al jugador al pasar un tubo
-        if (!parTuberia.scored && (parTuberia.top.x + PIPE_W) < player.x) {
+        if (!parTuberia.scored && (parTuberia.top.x + PIPE_W) < player.x && !isDying) {
             player.puntos++;
             PlaySound(pointSound);
             parTuberia.scored = true;

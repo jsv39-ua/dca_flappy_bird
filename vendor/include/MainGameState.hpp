@@ -62,6 +62,9 @@ class MainGameState : public GameState
         float deathTimer = 0.0f;
         float deathDelay = 1.5f;
 
+        // Comprobar que se haya reproducido sonido de golpe
+        bool hitSoundPlayed = false;
+
         Sound flapSound;
         Sound dieSound;
         Sound hitSound;

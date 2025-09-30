@@ -9,6 +9,7 @@ struct Bird{
     float x;
     float y;
     float vy;
+    int puntos;
 };
 
 struct PipePair {

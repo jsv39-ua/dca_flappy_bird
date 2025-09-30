@@ -1,6 +1,8 @@
 #include <MainGameState.hpp>
 #include <iostream>
 #include <deque>
+#include <GameOverState.hpp>
+#include <StateMachine.hpp>
 extern "C" {
  #include <raylib.h>
 }
@@ -16,6 +18,7 @@ void MainGameState::init()
 {
     player.x = 150;
     player.y = 200;
+    player.puntos = 0;
     spawnTimer = 0;
     spawnEvery = 250;
 
@@ -66,20 +69,27 @@ void MainGameState::update(float deltaTime)
     // Se pasa por referencia para poder actualizar los tubos reales y no copias suyas
     for (PipePair& parTuberia : tuberias){
     
-    parTuberia.top.x -= PIPE_SPEED * deltaTime;
-    parTuberia.bot.x -= PIPE_SPEED * deltaTime;
+        parTuberia.top.x -= PIPE_SPEED * deltaTime;
+        parTuberia.bot.x -= PIPE_SPEED * deltaTime;
 
-    if(tuberias.front().top.x < 0){
-        tuberias.pop_front();
+        if(tuberias.front().top.x < 0){
+            tuberias.pop_front();
         };
 
 
         /*************************************/
         // Calcular colisiones jugador/tuberia
-        
-        if (CheckCollisionRecs(parTuberia.top, playerCol) || CheckCollisionRecs(parTuberia.bot, playerCol)){
+            
+        if (CheckCollisionRecs(parTuberia.top, playerCol) || CheckCollisionRecs(parTuberia.bot, playerCol) || (player.y < 0 || player.y > GetScreenHeight())){
             // Enviar a pantalla de gameover
             std::cout << "Colision!!" << std::endl;
+            this->state_machine->add_state(std::make_unique<GameOverState>(player.puntos), true);
+        } 
+        
+        // Añadir puntos al jugador al pasar un tubo
+        if (!parTuberia.scored && (parTuberia.top.x + PIPE_W) < player.x) {
+            player.puntos++;
+            parTuberia.scored = true;
         }
     };
 
@@ -99,7 +109,7 @@ void MainGameState::render()
     DrawRectanglePro({player.x - PLAYER_RADIUS / 2 , player.y - PLAYER_RADIUS / 2 , PLAYER_RADIUS , PLAYER_RADIUS}, {0, 0}, 0, BLUE);
 
 
-    DrawText(TextFormat("Next pipe in: %f", spawnTimer), 50, 100, 20, RED);
+    DrawText(TextFormat("Punticos: %i", player.puntos), 50, 100, 20, YELLOW);
 
     DrawFPS(GetScreenWidth() - 20, GetScreenHeight() - 20);
 

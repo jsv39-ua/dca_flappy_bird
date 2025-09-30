@@ -10,6 +10,8 @@ struct Bird{
     float y;
     float vy;
     int puntos;
+    int height;
+    int width;
 };
 
 struct PipePair {
@@ -39,16 +41,19 @@ class MainGameState : public GameState
     private:
         char entered_key;
         Bird player;
+        Texture2D birdSprite;
+        Texture2D pipeSprite;
         std::deque<PipePair> tuberias;
 
         // Dimensiones de las tuberías
         const int anchoTubo = 50;
         const int altoTubo = 50;
-        const int PIPE_SPEED = 50;
+        const int PIPE_SPEED = 70;
 
         float spawnTimer;
         float spawnEvery;
         float PIPE_W = 32;
         float PIPE_H = 320;
+        float PIPE_GAP;
         float PLAYER_RADIUS = 17;
 };

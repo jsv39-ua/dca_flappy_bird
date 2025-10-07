@@ -43,6 +43,7 @@ class MainGameState : public GameState
         Bird player;
         Texture2D birdSprite;
         Texture2D pipeSprite;
+        Texture2D background;
         std::deque<PipePair> tuberias;
 
         // Dimensiones de las tuberías

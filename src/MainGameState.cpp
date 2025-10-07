@@ -21,6 +21,9 @@ MainGameState::~MainGameState(){
     UnloadSound(hitSound);
     UnloadSound(flapSound);
     UnloadSound(pointSound);
+
+    UnloadTexture(birdSprite);
+    UnloadTexture(pipeSprite);
 }
 
 void MainGameState::init()
@@ -47,6 +50,7 @@ void MainGameState::init()
 
     birdSprite = LoadTexture("assets/bluebird-midflap.png");
     pipeSprite = LoadTexture("assets/pipe-green.png");
+    background = LoadTexture("assets/background-day.png");
 
     player.width = birdSprite.width;
     player.height = birdSprite.height;
@@ -159,6 +163,7 @@ void MainGameState::update(float deltaTime)
     
     if (isDying) {
     deathTimer += deltaTime;
+    
     if (deathTimer >= deathDelay) {
         this->state_machine->add_state(std::make_unique<GameOverState>(player.puntos), true);
     }
@@ -172,7 +177,8 @@ void MainGameState::render()
 {
 
     BeginDrawing();
-    ClearBackground(BLACK);
+    ClearBackground(SKYBLUE);
+    DrawTexture(background, 0, 0, WHITE);
     
     DrawText("Bienvenido a Flappy Bird DCA", 50, 50, 15, YELLOW);
     DrawTexture(birdSprite, player.x, player.y, WHITE);

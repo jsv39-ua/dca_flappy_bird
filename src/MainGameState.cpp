@@ -24,6 +24,8 @@ MainGameState::~MainGameState(){
 
     UnloadTexture(birdSprite);
     UnloadTexture(pipeSprite);
+    UnloadTexture(background);
+    
 }
 
 void MainGameState::init()
@@ -85,6 +87,9 @@ void MainGameState::update(float deltaTime)
     player.vy += 550 * deltaTime;
     player.y += player.vy * deltaTime;
 
+    DIFFICULTY += 0.0005;
+    PIPE_GAP -= 0.001;
+
     // Caja de colision para el jugador
 
     Rectangle playerCol = {player.x, player.y + (float)5.0, (float)player.width , (float)player.height - (float)10.0};
@@ -92,8 +97,6 @@ void MainGameState::update(float deltaTime)
     
     // Velocidad a la que aumenta el timer
     spawnTimer += 1 * deltaTime;
-
-    DrawText(TextFormat("Next pipe in: %f", spawnEvery * deltaTime), 50, 70, 20, YELLOW);
 
     // Spawnear tubos cada spawnEvery
     if(spawnTimer >= spawnEvery * deltaTime){
@@ -117,8 +120,8 @@ void MainGameState::update(float deltaTime)
     // Se pasa por referencia para poder actualizar los tubos reales y no copias suyas
     for (PipePair& parTuberia : tuberias){
     
-        parTuberia.top.x -= PIPE_SPEED * deltaTime;
-        parTuberia.bot.x -= PIPE_SPEED * deltaTime;
+        parTuberia.top.x -= DIFFICULTY * PIPE_SPEED * deltaTime;
+        parTuberia.bot.x -= DIFFICULTY * PIPE_SPEED * deltaTime;
 
         if(tuberias.front().top.x < -PIPE_W){
             tuberias.pop_front();

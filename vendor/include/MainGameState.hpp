@@ -57,6 +57,7 @@ class MainGameState : public GameState
         float PIPE_H = 320;
         float PIPE_GAP;
         float PLAYER_RADIUS = 17;
+        float DIFFICULTY = 1.0f;
 
         // Animacion de morir
         bool isDying = false;
